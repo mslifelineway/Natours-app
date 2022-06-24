@@ -1,21 +1,21 @@
-import app from "./app";
-import mongoose from "mongoose";
+process.on('uncaughtException', (err: Error) => {
+  console.log('UNCAUGHT EXCEPTION ⭐🌟🔥 SHUTTING DOWN...')
+  console.log(err)
+})
 
-const port = process.env.PORT || 8000;
+import app from './app'
+import './mongoose.connection'
 
-//mongo database connection
-const connectDatabase = async () => {
-  try {
-    await mongoose.connect(process.env.DATABASE || "");
-    console.log("==> Aaw! Database connected!");
-  } catch (error) {
-    console.log("==> Database connection error: ", error);
-  }
-};
+const port = process.env.PORT || 8000
 
-connectDatabase();
-//mongo database connection - end
+const server = app.listen(port, () => {
+  console.log(`[server]: Server is running at https://localhost:${port}`)
+})
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at https://localhost:${port}`);
-});
+process.on('unhandledRejection', (err: Error) => {
+  console.log('UNHANDLED REJECTION ⭐🌟🔥 SHUTTING DOWN...')
+  console.log(err.name, err.message)
+  server.close(() => {
+    process.exit(1) //0 => success, 1 => uncaught exception
+  })
+})

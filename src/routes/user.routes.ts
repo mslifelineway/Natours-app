@@ -1,13 +1,22 @@
-import express from "express";
+import express from 'express'
 import {
   createUser,
   deleteUser,
   findUserById,
   getAllUsers,
   updateUser,
-} from "../controllers";
+  signUp
+} from '../controllers'
 
-export const userRouter = express.Router();
+export const userRouter = express.Router()
 
-userRouter.route("/").get(getAllUsers).post(createUser);
-userRouter.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);
+userRouter.post('/signup', signUp)
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser)
+userRouter
+  .route('/:id')
+  .get(findUserById)
+  .patch(updateUser)
+  .delete(deleteUser)
