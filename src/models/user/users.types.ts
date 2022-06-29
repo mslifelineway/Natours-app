@@ -1,9 +1,9 @@
 import { Document, Model } from "mongoose";
 export interface IUser {
-  name: string;
-  email: string;
-  photo: string;
-  password: string;
+  name?: string;
+  email?: string;
+  photo?: string;
+  password?: string;
   passwordConfirm?: string | undefined;
   passwordChangedAt?: Date;
   role?: string;

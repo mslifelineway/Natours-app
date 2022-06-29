@@ -32,6 +32,23 @@ const signToken = (user: IUserDocument) => {
   );
 };
 
+const createTokenAndSendResponse = (
+  user: IUserDocument,
+  statusCode: number,
+  res: Response,
+  message?: string,
+  payload?: any
+) => {
+  const token = signToken(user);
+
+  return res.status(statusCode).json({
+    status: "success",
+    message,
+    token,
+    data: payload,
+  });
+};
+
 /**
  * Sign Up
  *
@@ -70,18 +87,15 @@ export const login = catchAsync(
       return next(new AppError("Please provide the email and password!", 400));
     }
 
-    const user: IUserDocument | null = await User.findOne({ email });
+    const user: IUserDocument | null = await User.findOne({ email }).select(
+      "+password"
+    );
 
-    if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError("Incorrect email or password!", 401));
+    if (!user || !(await user.correctPassword(password, user.password || ""))) {
+      return next(new AppError("Incorrect email or password!", 400));
     }
 
-    const token = signToken(user);
-
-    res.status(201).json({
-      status: "success",
-      token,
-    });
+    createTokenAndSendResponse(user, 200, res, "Logged in successfully!");
   }
 );
 
@@ -195,7 +209,7 @@ export const forgotPassword = catchAsync(
     If You didn't forget your password, please ignore this email!`;
 
     const emailOptions: ISendEmailOptions = {
-      mailTo: user.email,
+      mailTo: user.email || "",
       subject: "Your password reset token (valid for 10 minutes)",
       message,
     };
@@ -268,11 +282,77 @@ export const resetPassword = catchAsync(
      * 4. Login the user and sent JWT
      */
 
-    const token = signToken(user);
-    return res.status(200).json({
-      status: "success",
-      token,
-      message: "Password resetted successfully!",
-    });
+    createTokenAndSendResponse(
+      user,
+      200,
+      res,
+      "Password resetted successfully!"
+    );
+  }
+);
+
+/**
+ * UPDATE THE PASSWORD
+ *
+ * Only logged in users are allowed to update the password
+ *
+ */
+
+export const updatePassword = catchAsync(
+  async (req: IExpressRequest, res: Response, next: NextFunction) => {
+    const { currentPassword, newPassword, passwordConfirm } = req.body;
+    if (!currentPassword || !newPassword || !passwordConfirm) {
+      return next(
+        new AppError(
+          "Please provide the current password, new password and passwordConfirm.",
+          400
+        )
+      );
+    }
+
+    if (!req.user) {
+      return next(
+        new AppError(
+          "It seems like you are not logged in. Please login and try again!",
+          400
+        )
+      );
+    }
+
+    /**
+     * 1. Get the user by POSTed email
+     */
+
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+      return next(new AppError("No user belongs to this email!", 400));
+    }
+
+    /**
+     * 2. Check if POSTed current pasword is correct
+     */
+
+    if (!(await user.correctPassword(currentPassword, user.password || ""))) {
+      return next(new AppError("Your current password is incorrect!", 401));
+    }
+
+    /**
+     * 3. If yes, update the password
+     */
+
+    user.password = newPassword;
+    user.passwordConfirm = passwordConfirm;
+    await user.save();
+
+    /**
+     * 4. Login the user and send new JWT
+     */
+
+    createTokenAndSendResponse(
+      user,
+      200,
+      res,
+      "Password updated successfully!"
+    );
   }
 );

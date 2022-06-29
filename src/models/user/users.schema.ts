@@ -32,6 +32,7 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Please provide the password!"],
     minlength: [8, "Password must be at least 8 characters!"],
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -64,28 +65,23 @@ UserSchema.methods.createPasswordResetToken = createPasswordResetToken;
 
 /**
  * Hash the password and don't insert the passwordConfirm field before saving
+ *
+ * update passwordChangedAt after resetting the password but before saving the new password and create new token
+ *
  */
 
 UserSchema.pre("save", async function (this: IUserDocument, next) {
   if (!this.isModified("password")) return next();
 
   //Hash the password with cost of 12
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password || "", 12);
 
   //delete the `passwordConfirm` or allow not to persist the in the Database
   this.passwordConfirm = undefined;
 
-  next();
-});
-
-/**
- * update passwordChangedAt after resetting the password but before saving the new password and create new token
- */
-
-UserSchema.pre("save", async function (this: IUserDocument, next) {
-  if (!this.isModified("password") || this.isNew) return next();
-
-  this.passwordChangedAt = new Date(Date.now() - 1000);
+  if (!this.isNew) {
+    this.passwordChangedAt = new Date(Date.now() - 1000);
+  }
   next();
 });
 
