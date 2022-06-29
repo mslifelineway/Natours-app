@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import {
   createTour,
   deleteTour,
@@ -7,23 +7,19 @@ import {
   updateTour,
   aliasTopTours,
   getTourStats,
-  getMonthlyPlan
-} from '../controllers'
+  getMonthlyPlan,
+  protect,
+  restrictTo,
+} from "../controllers";
 
-export const tourRouter = express.Router()
+export const tourRouter = express.Router();
 
-tourRouter.route('/statics').get(getTourStats)
-tourRouter.route('/monthly-plan/:year').get(getMonthlyPlan)
+tourRouter.route("/statics").get(getTourStats);
+tourRouter.route("/monthly-plan/:year").get(getMonthlyPlan);
+tourRouter.route("/top-cheapest").get(aliasTopTours).get(getAllTours);
+tourRouter.route("/").get(protect, getAllTours).post(createTour);
 tourRouter
-  .route('/top-cheapest')
-  .get(aliasTopTours)
-  .get(getAllTours)
-tourRouter
-  .route('/')
-  .get(getAllTours)
-  .post(createTour)
-tourRouter
-  .route('/:id')
+  .route("/:id")
   .get(findTourById)
   .patch(updateTour)
-  .delete(deleteTour)
+  .delete(protect, restrictTo(["admin", "lead-guide"]), deleteTour);

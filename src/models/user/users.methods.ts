@@ -1,12 +1,48 @@
-import { Document, Model } from 'mongoose'
-import { IUserDocument, IUserModel } from './users.types'
+import bcrypt from "bcryptjs";
+import { IUserDocument } from "./users.types";
+import crypto from "crypto";
 
-// INSTANCE or MODEL methods => are call on the result of a particular Model that is on a paticular document
-// Ex: const user = await User.find(); ===> this is the static
-//So, user.find() ===> or do something on `user` ==> is the Instance method or method => So this code will be written here
+/**
+ * It compare the password entered by the user and existing password in the document of that user
+ * @param providedPassword
+ * @param documentPassword
+ * @returns
+ */
 
-// WHEN YOU NEED `this` AS MODEL THEN USE `Model<IUserModel>` and when you need `this` as user document then use `this: IUserDocument`
+export async function correctPassword(
+  providedPassword: string,
+  documentPassword: string
+) {
+  return await bcrypt.compare(providedPassword, documentPassword);
+}
 
-export async function doSomething (this: IUserDocument): Promise<Document[]> {
-    return Model<IUserModel>.find({ name: this.name })
+export function checkChangedPasswordAfterTokenIssued(
+  this: IUserDocument,
+  JWTTimestamp: number
+): boolean {
+  if (this.passwordChangedAt) {
+    const changedPasswordTimestamp = this.passwordChangedAt.getTime() / 1000;
+    return JWTTimestamp < changedPasswordTimestamp; //true => changed
+  }
+  return false; //false => not changed
+}
+
+/**
+ * Create Reset Password Token After clicking on forgot password
+ *  returns {resetToken}
+ */
+export function createPasswordResetToken(this: IUserDocument): string {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  /**
+   * Reset password will be expired after 10 minutes of creation
+   *
+   * adding 10 minutes to current date
+   */
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 10000);
+  return resetToken;
 }

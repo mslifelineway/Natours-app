@@ -1,22 +1,23 @@
-import express from 'express'
+import express from "express";
 import {
   createUser,
   deleteUser,
   findUserById,
   getAllUsers,
   updateUser,
-  signUp
-} from '../controllers'
+  signUp,
+  login,
+  forgotPassword,
+  resetPassword,
+} from "../controllers";
 
-export const userRouter = express.Router()
+export const userRouter = express.Router();
 
-userRouter.post('/signup', signUp)
-userRouter
-  .route('/')
-  .get(getAllUsers)
-  .post(createUser)
-userRouter
-  .route('/:id')
-  .get(findUserById)
-  .patch(updateUser)
-  .delete(deleteUser)
+userRouter.post("/signup", signUp);
+userRouter.post("/login", login);
+
+userRouter.post("/forgotPassword", forgotPassword);
+userRouter.patch("/resetPassword/:resetToken", resetPassword);
+
+userRouter.route("/").get(getAllUsers).post(createUser);
+userRouter.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);
