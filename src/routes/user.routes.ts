@@ -11,6 +11,7 @@ import {
   forgotPassword,
   resetPassword,
   updateMe,
+  deleteMe,
 } from "../controllers";
 
 export const userRouter = express.Router();
@@ -23,6 +24,7 @@ userRouter.patch("/resetPassword/:resetToken", resetPassword);
 userRouter.patch("/updatePassword", protect, updatePassword);
 
 userRouter.patch("/updateMe", protect, updateMe);
+userRouter.delete("/deleteMe", protect, deleteMe);
 
 userRouter.route("/").get(getAllUsers).post(createUser);
 userRouter.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);

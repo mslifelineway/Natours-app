@@ -9,6 +9,7 @@ export interface IUser {
   role?: string;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
+  active?: boolean;
 }
 
 //DOCUMENT

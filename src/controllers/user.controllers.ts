@@ -22,12 +22,15 @@ const filterUserObj = (user: IUser, allowedFields: string[]): IUser => {
   return newObj;
 };
 
-export const getAllUsers = (_: Request, res: Response) => {
-  return res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
+export const getAllUsers = catchAsync(async (_: Request, res: Response) => {
+  const users = await User.find({ active: { $ne: false } });
+  return res.status(200).json({
+    status: "success",
+    message: "All active users!",
+    count: users.length,
+    data: { users },
   });
-};
+});
 
 export const createUser = (req: Request, res: Response) => {
   return res.status(500).json({
@@ -96,5 +99,18 @@ export const updateMe = catchAsync(
       message: "Data updated!",
       data: { updatedUser },
     });
+  }
+);
+
+/**
+ * DELETE ME
+ */
+
+export const deleteMe = catchAsync(
+  async (req: IExpressRequest, res: Response) => {
+    await User.findByIdAndUpdate(req.user?.id, { active: false });
+    return res
+      .status(204)
+      .json({ status: "success", message: "Account deleted!" });
   }
 );

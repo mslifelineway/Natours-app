@@ -41,6 +41,19 @@ const createTokenAndSendResponse = (
 ) => {
   const token = signToken(user);
 
+  const expiresIn: number = Number(process.env.JWT_COOKIE_EXPIRES_IN || 1);
+
+  const cookiesOptions = {
+    expiresIn: new Date(Date.now() + expiresIn * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === "production") {
+    cookiesOptions.secure = true;
+  }
+  res.cookie("jwt", cookiesOptions);
+
   return res.status(statusCode).json({
     status: "success",
     message,
@@ -57,7 +70,7 @@ const createTokenAndSendResponse = (
 export const signUp = catchAsync(async (req: Request, res: Response) => {
   const { name, email, password, passwordConfirm, passwordChangedAt, role } =
     req.body;
-  const newUser = await User.create({
+  const newUser: IUserDocument = await User.create({
     name,
     email,
     password,
@@ -65,6 +78,10 @@ export const signUp = catchAsync(async (req: Request, res: Response) => {
     passwordChangedAt,
     role,
   });
+
+  //Remove fields
+  newUser.password = undefined;
+  newUser.active = undefined;
 
   res.status(201).json({
     status: "success",
@@ -93,6 +110,17 @@ export const login = catchAsync(
 
     if (!user || !(await user.correctPassword(password, user.password || ""))) {
       return next(new AppError("Incorrect email or password!", 400));
+    }
+
+    /** check whether user's account is inactive or active */
+
+    if (!user.active) {
+      return next(
+        new AppError(
+          "Your account is disabled! Please try after resetting your password.",
+          500
+        )
+      );
     }
 
     createTokenAndSendResponse(user, 200, res, "Logged in successfully!");
@@ -266,6 +294,9 @@ export const resetPassword = catchAsync(
 
     user.password = req.body.password;
     user.passwordConfirm = req.body.passwordConfirm;
+
+    //If account was deleted or disabled then after resetting the password restore the account
+    user.active = true;
 
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;

@@ -6,7 +6,7 @@ import {
   createPasswordResetToken,
 } from "./users.methods";
 import validator from "validator";
-import { IUserDocument } from "./users.types";
+import { IUserDocument, IUserModel } from "./users.types";
 import bcrypt from "bcryptjs";
 
 const UserSchema = new Schema({
@@ -48,6 +48,10 @@ const UserSchema = new Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 //STATIC METHODS | For testing purposes only
@@ -84,5 +88,14 @@ UserSchema.pre("save", async function (this: IUserDocument, next) {
   }
   next();
 });
+
+/**
+ * Don't let inactive user to be selected when running  query starts with `find`
+ */
+
+// UserSchema.pre(/^find/, function (this: IUserModel, next: Function) {
+//   this.find({ active: { $ne: false } });
+//   next();
+// });
 
 export default UserSchema;
