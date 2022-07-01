@@ -10,8 +10,9 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 import hpp from "hpp";
+import path from "path";
 
-dotenv.config({ path: "./.env" });
+dotenv.config({ path: path.join(__dirname, "../config.env") });
 
 const app: Express = express();
 

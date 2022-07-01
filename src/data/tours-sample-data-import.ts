@@ -3,8 +3,9 @@ import fs from "fs";
 import mongoose from "mongoose";
 import Tour from "../models/tour.model";
 import { TOUR_SAMPLE_JSON_PATH } from "../utils/constants";
+import path from "path";
 
-dotenv.config({ path: "../../.env" });
+dotenv.config({ path: path.join(__dirname, "../../config.env") });
 
 //mongo database connection
 const connectDatabase = async () => {
