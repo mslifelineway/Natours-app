@@ -2,7 +2,7 @@ import express from "express";
 import {
   createTour,
   deleteTour,
-  findTourById,
+  getTourById,
   getAllTours,
   updateTour,
   aliasTopTours,
@@ -11,15 +11,20 @@ import {
   protect,
   restrictTo,
 } from "../controllers";
+import reviewRouter from "./review.routes";
 
-export const tourRouter = express.Router();
+const router = express.Router();
 
-tourRouter.route("/statics").get(getTourStats);
-tourRouter.route("/monthly-plan/:year").get(getMonthlyPlan);
-tourRouter.route("/top-cheapest").get(aliasTopTours).get(getAllTours);
-tourRouter.route("/").get(protect, getAllTours).post(createTour);
-tourRouter
+router.use("/:id/reviews", reviewRouter);
+
+router.route("/stats").get(getTourStats);
+router.route("/monthly-plan/:year").get(getMonthlyPlan);
+router.route("/top-cheapest").get(aliasTopTours).get(getAllTours);
+router.route("/").get(protect, getAllTours).post(createTour);
+router
   .route("/:id")
-  .get(findTourById)
+  .get(getTourById)
   .patch(updateTour)
   .delete(protect, restrictTo(["admin", "lead-guide"]), deleteTour);
+
+export default router;

@@ -1,7 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import { tourRouter, userRouter } from "./routes";
 import { STATIC_FOLDER_PATH } from "./utils/constants";
 import AppError from "./utils/AppError";
 import { globalErrorHandler } from "./controllers";
@@ -11,6 +10,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 import hpp from "hpp";
 import path from "path";
+import { userRouter, tourRouter, reviewRouter } from "./routes";
 
 dotenv.config({ path: path.join(__dirname, "../config.env") });
 
@@ -106,6 +106,7 @@ app.use(express.static(`${STATIC_FOLDER_PATH}`));
 //ROUTES MOUNTING
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 //Global middleware - end
 

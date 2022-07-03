@@ -25,7 +25,6 @@ export const getAllTours = catchAsync(
       .limitFields()
       .paginate();
 
-    console.log("==> req. user : ", req.user);
     const tours = await query;
 
     return res.status(200).json({
@@ -46,9 +45,10 @@ export const createTour = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const findTourById = catchAsync(
+export const getTourById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findById(req.params.id);
+    //`reviews` is a virtual method written in tour model to populate the reviews
+    const tour = await Tour.findById(req.params.id).populate({path: "reviews", select: "-__v"});
 
     if (!tour) {
       return next(new AppError("No tour found with that ID", 404));
@@ -64,12 +64,18 @@ export const findTourById = catchAsync(
 
 export const updateTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const bodyData = { ...req.body, guides: undefined };
 
-    if (!tour) {
+    const tour: IUserDocument | null = await Tour.findByIdAndUpdate(
+      req.params.id,
+      { $set: bodyData, $push: { guides: req.body.guides } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!tour || tour === null) {
       return next(new AppError("No tour found with that ID", 404));
     }
 

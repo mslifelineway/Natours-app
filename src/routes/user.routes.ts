@@ -14,17 +14,19 @@ import {
   deleteMe,
 } from "../controllers";
 
-export const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.post("/signup", signUp);
-userRouter.post("/login", login);
+router.post("/signup", signUp);
+router.post("/login", login);
 
-userRouter.post("/forgotPassword", forgotPassword);
-userRouter.patch("/resetPassword/:resetToken", resetPassword);
-userRouter.patch("/updatePassword", protect, updatePassword);
+router.post("/forgotPassword", forgotPassword);
+router.patch("/resetPassword/:resetToken", resetPassword);
+router.patch("/updatePassword", protect, updatePassword);
 
-userRouter.patch("/updateMe", protect, updateMe);
-userRouter.delete("/deleteMe", protect, deleteMe);
+router.patch("/updateMe", protect, updateMe);
+router.delete("/deleteMe", protect, deleteMe);
 
-userRouter.route("/").get(getAllUsers).post(createUser);
-userRouter.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);
+router.route("/").get(getAllUsers).post(createUser);
+router.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);
+
+export default router;

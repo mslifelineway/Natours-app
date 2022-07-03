@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 export interface IUser {
   name?: string;
   email?: string;
@@ -10,9 +10,10 @@ export interface IUser {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   active?: boolean;
+  guides?: [Types.ObjectId];
 }
 
-//DOCUMENT
+//DOCUMENT - INSTANCE METHODS
 export interface IUserDocument extends IUser, Document {
   correctPassword: (
     providedPassword: string,
@@ -23,6 +24,4 @@ export interface IUserDocument extends IUser, Document {
 }
 
 //MODEL
-export interface IUserModel extends Model<IUserDocument> {
-  findByName: (name: string) => Promise<IUserDocument[]>;
-}
+export interface IUserModel extends Model<IUserDocument> {}

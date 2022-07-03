@@ -1,15 +1,18 @@
 import { Schema } from "mongoose";
-import { findByName } from "./users.statics";
 import {
   checkChangedPasswordAfterTokenIssued,
   correctPassword,
   createPasswordResetToken,
 } from "./users.methods";
 import validator from "validator";
-import { IUserDocument, IUserModel } from "./users.types";
-import bcrypt from "bcryptjs";
+import { IUserDocument } from "./users.types";
+import {
+  hashPassword,
+  selectOnlyActiveUsers,
+  updatePasswordChangedAt,
+} from "./user.middlewares";
 
-const UserSchema = new Schema({
+const UserSchema = new Schema<IUserDocument>({
   name: {
     type: String,
     required: [true, "Please provide your name!"],
@@ -54,11 +57,7 @@ const UserSchema = new Schema({
   },
 });
 
-//STATIC METHODS | For testing purposes only
-
-UserSchema.statics.findByName = findByName;
-
-//MODEL OR INSTANCE METHODS
+//INSTANCE METHODS
 
 UserSchema.methods.correctPassword = correctPassword;
 UserSchema.methods.checkChangedPasswordAfterTokenIssued =
@@ -67,35 +66,8 @@ UserSchema.methods.createPasswordResetToken = createPasswordResetToken;
 
 //MIDDLEWARES
 
-/**
- * Hash the password and don't insert the passwordConfirm field before saving
- *
- * update passwordChangedAt after resetting the password but before saving the new password and create new token
- *
- */
-
-UserSchema.pre("save", async function (this: IUserDocument, next) {
-  if (!this.isModified("password")) return next();
-
-  //Hash the password with cost of 12
-  this.password = await bcrypt.hash(this.password || "", 12);
-
-  //delete the `passwordConfirm` or allow not to persist the in the Database
-  this.passwordConfirm = undefined;
-
-  if (!this.isNew) {
-    this.passwordChangedAt = new Date(Date.now() - 1000);
-  }
-  next();
-});
-
-/**
- * Don't let inactive user to be selected when running  query starts with `find`
- */
-
-// UserSchema.pre(/^find/, function (this: IUserModel, next: Function) {
-//   this.find({ active: { $ne: false } });
-//   next();
-// });
+UserSchema.pre("save", hashPassword);
+UserSchema.pre("save", updatePasswordChangedAt);
+// UserSchema.pre(/^find/, selectOnlyActiveUsers);
 
 export default UserSchema;

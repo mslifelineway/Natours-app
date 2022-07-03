@@ -4,6 +4,7 @@ import { User } from "../models";
 import { IUser, IUserDocument } from "../models/user/users.types";
 import AppError from "../utils/AppError";
 import { catchAsync } from "../utils/catchAsync";
+import { deleteOne } from "./handlerFactory";
 
 /**
  * Filter out the unwanted fields that are not allowed to be updated
@@ -53,12 +54,7 @@ export const updateUser = (req: Request, res: Response) => {
   });
 };
 
-export const deleteUser = (req: Request, res: Response) => {
-  return res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  });
-};
+export const deleteUser = deleteOne(User);
 
 /** ACTIONS DONE BY THE USER (NOT BY ADMIN) */
 
@@ -88,7 +84,7 @@ export const updateMe = catchAsync(
     const updatedUser: IUserDocument | null = await User.findByIdAndUpdate(
       req.user?.id,
       filterBody,
-      { runValidators: true }
+      { runValidators: true, new: true }
     );
     if (!updatedUser) {
       return next(new AppError("Account couldn't find!", 400));
