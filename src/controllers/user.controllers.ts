@@ -4,7 +4,7 @@ import { User } from "../models";
 import { IUser, IUserDocument } from "../models/user/users.types";
 import AppError from "../utils/AppError";
 import { catchAsync } from "../utils/catchAsync";
-import { deleteOne } from "./handlerFactory";
+import { deleteOne, updateOne } from "./handlerFactory";
 
 /**
  * Filter out the unwanted fields that are not allowed to be updated
@@ -53,6 +53,7 @@ export const updateUser = (req: Request, res: Response) => {
     message: "This route is not yet defined!",
   });
 };
+// export const updateUser = updateOne(User);
 
 export const deleteUser = deleteOne(User);
 

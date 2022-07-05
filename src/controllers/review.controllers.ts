@@ -5,7 +5,7 @@ import { IReviewDocument } from "../models/review/review.types";
 import { IExpressRequest } from "../interfaces/types";
 import { IUserDocument } from "../models/user/users.types";
 import AppError from "../utils/AppError";
-import { deleteOne } from "./handlerFactory";
+import { deleteOne, updateOne } from "./handlerFactory";
 
 /**
  * Get all reviews of a tour
@@ -75,3 +75,4 @@ export const createReview = catchAsync(
  */
 
 export const deleteReview = deleteOne(Review);
+export const updateReview = updateOne(Review);
