@@ -10,8 +10,12 @@ import {
   login,
   forgotPassword,
   resetPassword,
+  getMe,
   updateMe,
   deleteMe,
+  getUser,
+  getInactiveUsers,
+  getActiveUsers
 } from "../controllers";
 
 const router = express.Router();
@@ -23,6 +27,9 @@ router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", resetPassword);
 router.patch("/updatePassword", protect, updatePassword);
 
+router.get("/me", protect, getMe, getUser);
+router.get("/inactive", protect, getInactiveUsers, getAllUsers);
+router.get("/active", protect, getActiveUsers, getAllUsers);
 router.patch("/updateMe", protect, updateMe);
 router.delete("/deleteMe", protect, deleteMe);
 

@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { IExpressRequest } from "../interfaces/types";
 import Tour from "../models/tour.model";
-import { IUserDocument } from "../models/user/users.types";
-import { APIFeatures } from "../utils/apiFeatures";
-import AppError from "../utils/AppError";
 import { catchAsync } from "../utils/catchAsync";
+import {
+  getOne,
+  createOne,
+  updateOne,
+  deleteOne,
+  getAll,
+} from "./handlerFactory";
 
 export const aliasTopTours = (
   req: Request,
@@ -17,91 +20,15 @@ export const aliasTopTours = (
   next();
 };
 
-export const getAllTours = catchAsync(
-  async (req: IExpressRequest, res: Response) => {
-    const { query } = new APIFeatures(Tour.find(), req)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
+export const getAllTours = getAll(Tour);
 
-    const tours = await query;
+export const createTour = createOne(Tour);
 
-    return res.status(200).json({
-      status: "success",
-      message: "Tours results!",
-      count: tours.length,
-      data: tours,
-    });
-  }
-);
+export const getTourById = getOne(Tour);
 
-export const createTour = catchAsync(async (req: Request, res: Response) => {
-  const newTour = await Tour.create(req.body);
-  return res.status(201).json({
-    status: "success",
-    message: "Tour created successfully!",
-    data: newTour,
-  });
-});
+export const updateTour = updateOne(Tour);
 
-export const getTourById = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    //`reviews` is a virtual method written in tour model to populate the reviews
-    const tour = await Tour.findById(req.params.id).populate({path: "reviews", select: "-__v"});
-
-    if (!tour) {
-      return next(new AppError("No tour found with that ID", 404));
-    }
-
-    return res.status(200).json({
-      status: "success",
-      message: "Tour fetched successfully!",
-      data: tour,
-    });
-  }
-);
-
-export const updateTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const bodyData = { ...req.body, guides: undefined };
-
-    const tour: IUserDocument | null = await Tour.findByIdAndUpdate(
-      req.params.id,
-      { $set: bodyData, $push: { guides: req.body.guides } },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    if (!tour || tour === null) {
-      return next(new AppError("No tour found with that ID", 404));
-    }
-
-    return res.status(200).json({
-      status: "success",
-      message: "Tour updated!",
-      data: tour,
-    });
-  }
-);
-
-export const deleteTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id);
-
-    if (!tour) {
-      return next(new AppError("No tour found with that ID", 404));
-    }
-
-    return res.status(204).json({
-      status: "success",
-      message: "Tour deleted!",
-      data: null,
-    });
-  }
-);
+export const deleteTour = deleteOne(Tour);
 
 export const getTourStats = catchAsync(async (req: Request, res: Response) => {
   const tours = await Tour.aggregate([

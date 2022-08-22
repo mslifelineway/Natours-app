@@ -19,3 +19,8 @@ export interface ISendEmailOptions {
   subject: string;
   message: string;
 }
+
+export interface IPopulateOptions {
+  path?: string;
+  select?: string;
+}

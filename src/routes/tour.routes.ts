@@ -15,7 +15,7 @@ import reviewRouter from "./review.routes";
 
 const router = express.Router();
 
-router.use("/:id/reviews", reviewRouter);
+router.use("/:tourId/reviews", reviewRouter);
 
 router.route("/stats").get(getTourStats);
 router.route("/monthly-plan/:year").get(getMonthlyPlan);

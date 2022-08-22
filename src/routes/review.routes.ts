@@ -2,9 +2,12 @@ import express from "express";
 import {
   createReview,
   deleteReview,
-  getATourReviews,
+  getAllReviewsByTourId,
   protect,
   restrictTo,
+  updateReview,
+  checkUserAndTourIds,
+  prepareNewReviewData
 } from "../controllers";
 
 /**
@@ -16,9 +19,9 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(getATourReviews)
-  .post(protect, restrictTo(["user"]), createReview);
+  .get(getAllReviewsByTourId)
+  .post(protect, restrictTo(["user"]), checkUserAndTourIds, prepareNewReviewData, createReview);
 
-router.route("/:id").delete(deleteReview);
+router.route("/:id").patch(updateReview).delete(deleteReview);
 
 export default router;

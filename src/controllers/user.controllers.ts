@@ -4,7 +4,34 @@ import { User } from "../models";
 import { IUser, IUserDocument } from "../models/user/users.types";
 import AppError from "../utils/AppError";
 import { catchAsync } from "../utils/catchAsync";
-import { deleteOne, updateOne } from "./handlerFactory";
+import { deleteOne, getOne, getAll } from "./handlerFactory";
+
+export const getMe = (
+  req: IExpressRequest,
+  _: Response,
+  next: NextFunction
+) => {
+  req.params.id = req.user?.id;
+  next();
+};
+
+export const getInactiveUsers = (
+  req: IExpressRequest,
+  _: Response,
+  next: NextFunction
+) => {
+  req.params.active = "false";
+  next();
+};
+
+export const getActiveUsers = (
+  req: IExpressRequest,
+  _: Response,
+  next: NextFunction
+) => {
+  req.params.active = "true";
+  next();
+};
 
 /**
  * Filter out the unwanted fields that are not allowed to be updated
@@ -23,15 +50,9 @@ const filterUserObj = (user: IUser, allowedFields: string[]): IUser => {
   return newObj;
 };
 
-export const getAllUsers = catchAsync(async (_: Request, res: Response) => {
-  const users = await User.find({ active: { $ne: false } });
-  return res.status(200).json({
-    status: "success",
-    message: "All active users!",
-    count: users.length,
-    data: { users },
-  });
-});
+export const getAllUsers = getAll(User);
+
+export const getUser = getOne(User);
 
 export const createUser = (req: Request, res: Response) => {
   return res.status(500).json({
