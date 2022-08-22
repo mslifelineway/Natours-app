@@ -7,7 +7,7 @@ import {
   restrictTo,
   updateReview,
   checkUserAndTourIds,
-  prepareNewReviewData
+  prepareNewReviewData,
 } from "../controllers";
 
 /**
@@ -17,11 +17,21 @@ import {
  */
 const router = express.Router({ mergeParams: true });
 
+router.use(protect);
+
 router
   .route("/")
   .get(getAllReviewsByTourId)
-  .post(protect, restrictTo(["user"]), checkUserAndTourIds, prepareNewReviewData, createReview);
+  .post(
+    restrictTo(["user"]),
+    checkUserAndTourIds,
+    prepareNewReviewData,
+    createReview
+  );
 
-router.route("/:id").patch(updateReview).delete(deleteReview);
+router
+  .route("/:id")
+  .patch(restrictTo(["user", "admin"]), updateReview)
+  .delete(restrictTo(["user", "admin"]), deleteReview);
 
 export default router;
