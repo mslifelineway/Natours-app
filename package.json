@@ -12,8 +12,8 @@
     "start:prod": "SET NODE_ENV=production&& concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "debug": "concurrently \"npx tsc --watch\" \"ndb dist/server.js\"",
-    "import-data": "node dist/data/tours-sample-data-import.js --import",
-    "delete-data": "node dist/data/tours-sample-data-import.js --delete"
+    "import-data": "node dist/data/import-dev-data.js --import",
+    "delete-data": "node dist/data/import-dev-data.js --delete"
   },
   "keywords": [],
   "author": "",

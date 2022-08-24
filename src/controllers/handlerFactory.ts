@@ -14,7 +14,9 @@ import { APIFeatures } from "../utils/apiFeatures";
  *
  */
 
-export const createOne = (Model: IUserModel | IReviewModel) =>
+export const createOne = (
+  Model: IUserModel | ITourModel | IReviewModel | any
+) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.create(req.body);
 
@@ -31,7 +33,9 @@ export const createOne = (Model: IUserModel | IReviewModel) =>
  *
  */
 
-export const updateOne = (Model: IReviewModel | ITourModel | any) =>
+export const updateOne = (
+  Model: IUserModel | ITourModel | IReviewModel | any
+) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -55,7 +59,9 @@ export const updateOne = (Model: IReviewModel | ITourModel | any) =>
  *
  */
 
-export const deleteOne = (Model: IUserModel | IReviewModel) =>
+export const deleteOne = (
+  Model: IUserModel | ITourModel | IReviewModel | any
+) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
 
@@ -70,7 +76,7 @@ export const deleteOne = (Model: IUserModel | IReviewModel) =>
   });
 
 export const getOne = (
-  Model: IUserModel | IReviewModel | any,
+  Model: IUserModel | ITourModel | IReviewModel | any,
   populateOptions?: IPopulateOptions
 ) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -106,6 +112,7 @@ export const getAll = (Model: IUserModel | ITourModel | IReviewModel | any) =>
       .limitFields()
       .paginate();
 
+    // const docs = await query.explain();
     const docs = await query;
 
     return res.status(200).json({

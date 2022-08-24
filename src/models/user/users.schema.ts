@@ -6,11 +6,7 @@ import {
 } from "./users.methods";
 import validator from "validator";
 import { IUserDocument } from "./users.types";
-import {
-  hashPassword,
-  selectOnlyActiveUsers,
-  updatePasswordChangedAt,
-} from "./user.middlewares";
+import { hashPassword, updatePasswordChangedAt } from "./user.middlewares";
 
 const UserSchema = new Schema<IUserDocument>({
   name: {
@@ -24,7 +20,6 @@ const UserSchema = new Schema<IUserDocument>({
     lowercase: true,
     validate: [validator.isEmail, "Please provide a valid email!"],
   },
-
   photo: String,
   role: {
     type: String,

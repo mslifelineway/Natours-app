@@ -13,7 +13,7 @@ export const checkUserAndTourIds = (
   next: NextFunction
 ) => {
   const user: IUserDocument | undefined = req.user;
-  const tourId = req.params.id;
+  const { tourId } = req.params;
 
   if (!user) {
     return next(new AppError("Please login!", 401));
@@ -38,7 +38,7 @@ export const prepareNewReviewData = (
 ) => {
   const { review, rating } = req.body;
   const user: IUserDocument | undefined = req.user;
-  const tourId = req.params.id;
+  const tourId = req.params.tourId;
   const reviewObj = {
     review,
     rating,

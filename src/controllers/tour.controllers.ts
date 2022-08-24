@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Tour from "../models/tour.model";
+import { Tour } from "../models/tour/tour.model";
 import { catchAsync } from "../utils/catchAsync";
 import {
   getOne,
@@ -24,7 +24,10 @@ export const getAllTours = getAll(Tour);
 
 export const createTour = createOne(Tour);
 
-export const getTourById = getOne(Tour);
+export const getTourById = getOne(Tour, {
+  path: "reviews",
+  select: "review",
+});
 
 export const updateTour = updateOne(Tour);
 

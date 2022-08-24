@@ -1,6 +1,9 @@
-import { Schema, Types } from "mongoose";
+import { getAll } from "./../../controllers/handlerFactory";
+import { Model, Schema } from "mongoose";
+import { calcAverageRatings } from "./review.methods";
 import { populateTourAndUser } from "./review.middlewares";
-import { IReviewDocument } from "./review.types";
+import { IReview, IReviewDocument, IReviewModel } from "./review.types";
+import { Review } from "./review.model";
 
 const reviewSchema = new Schema<IReviewDocument>(
   {
@@ -18,12 +21,12 @@ const reviewSchema = new Schema<IReviewDocument>(
       default: Date.now(),
     },
     tour: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Tour",
       require: [true, "Review must belong to a tour!"],
     },
     user: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       require: [true, "Review must belong to an user!"],
     },
@@ -33,5 +36,23 @@ const reviewSchema = new Schema<IReviewDocument>(
 
 //MIDDLEWARE
 reviewSchema.pre(/^find/, populateTourAndUser);
+
+//STATIC METHODS
+reviewSchema.statics.calcAverageRatings = calcAverageRatings;
+
+/**
+ * PENDING FOR NOW
+ * TODO: Need to check how can we get access to calcAverageRatings so we can call this.constructor.calcAverageRatings()
+ */
+reviewSchema.post(
+  "save",
+  async function (this: IReviewDocument, doc: IReviewDocument) {
+    console.log("doc: ", doc);
+    const cons = this.constructor;
+    // const calc = cons.calcAverageRatings();
+    // console.log(cons, calc);
+    console.log("===> testing...");
+  }
+);
 
 export default reviewSchema;

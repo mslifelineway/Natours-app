@@ -1,4 +1,4 @@
-import { Document, Model, Types } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 export interface IUser {
   name?: string;
   email?: string;
@@ -10,7 +10,7 @@ export interface IUser {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   active?: boolean;
-  guides?: [Types.ObjectId];
+  guides?: [Schema.Types.ObjectId];
 }
 
 //DOCUMENT - INSTANCE METHODS

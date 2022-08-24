@@ -1,4 +1,4 @@
-import { Model, Document, Types } from "mongoose";
+import { Model, Document, Schema } from "mongoose";
 
 export enum ITourStartLocationTypeEnums {
   POINT = "Point",
@@ -30,7 +30,8 @@ export interface ITour {
   price?: number;
   startLocation?: ITourStartLocation;
   locations?: [ITourStartLocation];
-  guides?: [Types.ObjectId];
+  guides?: [Schema.Types.ObjectId];
+  queryStartTime?: number;
 }
 
 export interface ITourDocuement extends ITour, Document {}

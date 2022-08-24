@@ -1,4 +1,14 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { getDurationWeek, referenceReviewModel } from "./tour.methods";
+import {
+  findNonSecretTour,
+  findNonSecretTourPost,
+  findNonSecretTourUsingAggregate,
+  populateGuidesDetails,
+  slugifyTourName,
+  queryStartTime,
+  queryEndTime,
+} from "./tour.middlewares";
 import { ITourDocuement } from "./tour.types";
 
 const tourSchema = new mongoose.Schema<ITourDocuement>(
@@ -97,12 +107,35 @@ const tourSchema = new mongoose.Schema<ITourDocuement>(
     ],
     guides: [
       {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+//INDEXES (1 = Ascending order, -1 = Descending order)
+tourSchema.index({ ratingsAverage: -1 });
+tourSchema.index({ slug: -1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound Index
+
+//VIRTUAL METHODS - called while fetching data
+tourSchema.virtual("durationWeeks").get(getDurationWeek);
+
+tourSchema.virtual("reviews", referenceReviewModel);
+
+//MIDDLEWARES
+tourSchema.pre("save", slugifyTourName);
+tourSchema.pre(/^find/, findNonSecretTour);
+tourSchema.pre(/^find/, populateGuidesDetails);
+
+tourSchema.post(/^find/, findNonSecretTourPost);
+
+//query runtime calculation
+tourSchema.pre(/^find/, queryStartTime);
+tourSchema.post(/^find/, queryEndTime);
+
+// tourSchema.post("aggregate", findNonSecretTourUsingAggregate);
 
 export default tourSchema;

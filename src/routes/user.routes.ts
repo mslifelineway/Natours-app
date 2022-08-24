@@ -15,23 +15,27 @@ import {
   deleteMe,
   getUser,
   getInactiveUsers,
-  getActiveUsers
+  getActiveUsers,
 } from "../controllers";
 
 const router = express.Router();
 
 router.post("/signup", signUp);
 router.post("/login", login);
-
 router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", resetPassword);
-router.patch("/updatePassword", protect, updatePassword);
 
-router.get("/me", protect, getMe, getUser);
-router.get("/inactive", protect, getInactiveUsers, getAllUsers);
-router.get("/active", protect, getActiveUsers, getAllUsers);
-router.patch("/updateMe", protect, updateMe);
-router.delete("/deleteMe", protect, deleteMe);
+//All the routers after `router.use(protect)` will be protected
+router.use(protect);
+
+router.patch("/updatePassword", updatePassword);
+
+router.get("/me", getMe, getUser);
+router.get("/inactive", getInactiveUsers, getAllUsers);
+router.get("/active", getActiveUsers, getAllUsers);
+
+router.patch("/updateMe", updateMe);
+router.delete("/deleteMe", deleteMe);
 
 router.route("/").get(getAllUsers).post(createUser);
 router.route("/:id").get(findUserById).patch(updateUser).delete(deleteUser);
