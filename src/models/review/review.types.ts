@@ -6,16 +6,17 @@ export interface IReview {
   createdAt?: Date;
   tour?: Schema.Types.ObjectId;
   user?: Schema.Types.ObjectId;
-  model?: Model<IReviewModel>;
-  prototype?: any;
+
+  constructor?: {
+    calcAverageRatings: Function;
+  };
 }
 
 //document
-export interface IReviewDocument extends IReview, Document {
-  // calcAverageRatings(review: IReviewModel, tourId: ObjectId): Promise<void>;
-}
+export interface IReviewDocument extends IReview, Document {}
 
 //model
 export interface IReviewModel extends Model<IReviewDocument> {
+  clone(): IReviewModel;
   calcAverageRatings(review: IReviewModel, tourId: ObjectId): Promise<void>;
 }

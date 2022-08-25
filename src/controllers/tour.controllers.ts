@@ -26,7 +26,7 @@ export const createTour = createOne(Tour);
 
 export const getTourById = getOne(Tour, {
   path: "reviews",
-  select: "review",
+  select: "review rating",
 });
 
 export const updateTour = updateOne(Tour);

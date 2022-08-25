@@ -1,9 +1,10 @@
-import { getAll } from "./../../controllers/handlerFactory";
-import { Model, Schema } from "mongoose";
+import { Schema } from "mongoose";
 import { calcAverageRatings } from "./review.methods";
-import { populateTourAndUser } from "./review.middlewares";
-import { IReview, IReviewDocument, IReviewModel } from "./review.types";
-import { Review } from "./review.model";
+import {
+  calculateAverageRatings,
+  populateTourAndUser,
+} from "./review.middlewares";
+import { IReviewDocument, IReviewModel } from "./review.types";
 
 const reviewSchema = new Schema<IReviewDocument>(
   {
@@ -34,25 +35,30 @@ const reviewSchema = new Schema<IReviewDocument>(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-//MIDDLEWARE
-reviewSchema.pre(/^find/, populateTourAndUser);
+//INDEXES
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true }); //Since one user can write review only once on a tour
 
 //STATIC METHODS
 reviewSchema.statics.calcAverageRatings = calcAverageRatings;
 
-/**
- * PENDING FOR NOW
- * TODO: Need to check how can we get access to calcAverageRatings so we can call this.constructor.calcAverageRatings()
- */
-reviewSchema.post(
-  "save",
-  async function (this: IReviewDocument, doc: IReviewDocument) {
-    console.log("doc: ", doc);
-    const cons = this.constructor;
-    // const calc = cons.calcAverageRatings();
-    // console.log(cons, calc);
-    console.log("===> testing...");
+//MIDDLEWARE
+reviewSchema.pre(/^find/, populateTourAndUser);
+
+reviewSchema.post("save", calculateAverageRatings);
+
+//findByIdAndUpdate is the shorthand for findOneAndUpdate and similarly findByIdAndDelete is shorthand for findOneAndDelete
+//There is no document middlewares for the findByIdAndUpdate and findByIdAndDelete but we have query middlewares
+reviewSchema.pre(
+  /^findOneAnd/,
+  async function (this: IReviewModel, next: Function) {
+    await this.clone().findOne(); //clone is used to prevent query execution already
+    next();
   }
 );
+reviewSchema.post(/^findOneAnd/, async function (doc: IReviewDocument) {
+  if (doc && doc.constructor) {
+    await doc.constructor.calcAverageRatings(doc.constructor, doc.tour);
+  }
+});
 
 export default reviewSchema;

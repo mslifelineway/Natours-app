@@ -63,6 +63,7 @@ UserSchema.methods.createPasswordResetToken = createPasswordResetToken;
 
 UserSchema.pre("save", hashPassword);
 UserSchema.pre("save", updatePasswordChangedAt);
+
 // UserSchema.pre(/^find/, selectOnlyActiveUsers);
 
 export default UserSchema;

@@ -43,7 +43,6 @@ export const populateGuidesDetails = function (
  */
 
 export const findNonSecretTour = function (this: ITourModel, next: Function) {
-  console.log("find non secret : ", this);
   this.find({ secretTour: { $ne: true } });
   next();
 };

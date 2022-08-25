@@ -11,7 +11,7 @@
     "start": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "start:prod": "SET NODE_ENV=production&& concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
-    "debug": "concurrently \"npx tsc --watch\" \"ndb dist/server.js\"",
+    "debug": "concurrently \"npx tsc --watch\" \"ndb dist/server.js --watch\"",
     "import-data": "node dist/data/import-dev-data.js --import",
     "delete-data": "node dist/data/import-dev-data.js --delete"
   },
