@@ -6,9 +6,15 @@
   }
 }
 
-@mixin align-vertical-center {
+@mixin absCenter {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+@mixin fixedToCenter {
+  position: fixed;
+  top: 0;
+  left: 0;
 }

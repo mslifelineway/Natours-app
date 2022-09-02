@@ -32,10 +32,9 @@
     }
 
     &__nav {
+        @include fixedToCenter;
+
         height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
         z-index: 1500;
 
         //hide
@@ -45,7 +44,7 @@
     }
 
     &__list {
-        @include align-vertical-center;
+        @include absCenter;
 
         list-style: none;
     }
