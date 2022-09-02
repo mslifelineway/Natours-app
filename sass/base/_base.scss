@@ -7,7 +7,25 @@
 }
 
 html {
+    /*
+        This defines what 1rem is
+        1rem = 10px;
+        10px / 16px = 62.5%
+    */
     font-size: 62.5%;
+
+    //At the same time tab-port and tab-land will be applied to make sure to put tab-land first in order
+    @include respond(tab-land) {
+        font-size: 56.2%; //suppose to be 1rem = 9px  at this size then 9/16 = 56.25%
+    }
+
+    @include respond(tab-port) {
+        font-size: 50%; //suppose to be 1rem = 8px  at this size then 8/16 = 50%
+    }
+
+    @include respond(big-desktop) {
+        font-size: 75%; //suppose to be 1rem = 12px  at this size then 12/16 = 75%
+    }
 }
 
 body {
