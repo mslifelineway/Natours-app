@@ -16,7 +16,7 @@ html {
 
     //At the same time tab-port and tab-land will be applied to make sure to put tab-land first in order
     @include respond(tab-land) {
-        font-size: 56.2%; //suppose to be 1rem = 9px  at this size then 9/16 = 56.25%
+        font-size: 56.25%; //suppose to be 1rem = 9px  at this size then 9/16 = 56.25%
     }
 
     @include respond(tab-port) {
@@ -30,4 +30,9 @@ html {
 
 body {
     box-sizing: border-box;
+    padding: 3rem;
+
+    @include respond(tab-port) {
+        padding: 0;
+    }
 }

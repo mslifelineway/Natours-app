@@ -107,7 +107,30 @@
           </div>
           <div class="col-1-of-2">
             <div class="composition">
+              <!-- 3. IMAGE RESPONSIVE PROCESS
+                  Density resolution process in image responsive -->
               <img
+                srcset="images/nat-1.jpg 300w, images/nat-1-large.jpg 1000w"
+                alt="Photo 1"
+                class="composition__photo composition__photo--p1"
+                sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px"
+                src="images/nat-1-large.jpg"
+              />
+              <img
+                srcset="images/nat-2.jpg 300w, images/nat-2-large.jpg 1000w"
+                alt="Photo 2"
+                class="composition__photo composition__photo--p2"
+                sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px"
+                src="images/nat-2-large.jpg"
+              />
+              <img
+                srcset="images/nat-3.jpg 300w, images/nat-3-large.jpg 1000w"
+                alt="Photo 3"
+                class="composition__photo composition__photo--p3"
+                sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px"
+                src="images/nat-3-large.jpg"
+              />
+              <!-- <img
                 src="images/nat-1-large.jpg"
                 alt="Photo 1"
                 class="composition__photo composition__photo--p1"
@@ -121,7 +144,7 @@
                 src="images/nat-3-large.jpg"
                 alt="Photo 3"
                 class="composition__photo composition__photo--p3"
-              />
+              /> -->
             </div>
           </div>
         </div>
@@ -421,7 +444,34 @@
 
     <footer class="footer">
       <div class="footer__logo-box u-margin-bottom-large">
-        <img src="./images/logo-green-2x.png" alt="Logo" class="footer__logo" />
+        <!--1. IMAGE RESPONSIVE PROCESS
+          Art Direction process for making image responsive -->
+        <picture>
+          <source
+            srcset="
+              ./images/logo-green-1x.png 1x,
+              ./images/logo-green-2x.png 2x
+            "
+            media="(max-width: 56.25em)"
+          />
+
+          <img
+            srcset="
+              ./images/logo-green-1x.png 1x,
+              ./images/logo-green-2x.png 2x
+            "
+            alt="Logo"
+            class="footer__logo"
+            src="./images/logo-green-2x.png 2x"
+          />
+        </picture>
+        <!-- 2. IMAGE RESPONSIVE PROCESS
+           Resolution switching process for making images responsive -->
+        <!-- <img
+          srcset="./images/logo-green-1x.png 1x, ./images/logo-green-2x.png 2x"
+          alt="Logo"
+          class="footer__logo"
+        /> -->
       </div>
       <div class="row">
         <div class="col-1-of-2">
@@ -484,36 +534,5 @@
         </div>
       </div>
     </div>
-
-    <!-- <section class="grid-test">
-      <div class="row">
-        <div class="col-1-of-2">Col 1 of 2</div>
-        <div class="col-1-of-2">Col 1 of 2</div>
-      </div>
-      <div class="row">
-        <div class="col-1-of-3">Col 1 of 3</div>
-        <div class="col-1-of-3">Col 1 of 3</div>
-        <div class="col-1-of-3">Col 1 of 3</div>
-      </div>
-      <div class="row">
-        <div class="col-1-of-3">Col 1 of 3</div>
-        <div class="col-2-of-3">Col 2 of 3</div>
-      </div>
-      <div class="row">
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-1-of-4">Col 1 of 4</div>
-      </div>
-      <div class="row">
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-2-of-4">Col 2 of 4</div>
-      </div>
-      <div class="row">
-        <div class="col-1-of-4">Col 1 of 4</div>
-        <div class="col-3-of-4">Col 3 of 4</div>
-      </div>
-    </section> -->
   </body>
 </html>

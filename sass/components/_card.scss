@@ -14,8 +14,8 @@
     width: 100%;
     backface-visibility: hidden;
     border-radius: $default-border-radius;
-    overflow: hidden;
     box-shadow: $box-shadow-5;
+    overflow: hidden;
 
     &--front {
       background-color: $color-white;
@@ -152,5 +152,52 @@
   &__price-value {
     font-size: 6rem;
     font-weight: 100;
+  }
+
+  @include respond(tab-port) {
+    height: auto;
+    border-radius: 3px;
+    background-color: $color-white;
+    border-radius: $default-border-radius;
+    box-shadow: $box-shadow-5;
+    overflow: hidden;
+
+    &__side {
+      height: auto;
+      position: relative;
+      box-shadow: none;
+      border-radius: none;
+
+      &--back {
+        transform: rotateY(0deg);
+        -webkit-clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+        clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+      }
+    }
+
+    &:hover &__side--front {
+      transform: rotateY(0deg);
+    }
+
+    &__details {
+      padding: 1rem 3rem;
+    }
+    //BACK SIDE STYLING
+    &__cta {
+      position: relative;
+      top: 0%;
+      left: 0%;
+      transform: translate(0);
+      width: 100%;
+      padding: 7rem 4rem 4rem 4rem;
+    }
+
+    &__price-box {
+      margin-bottom: 3rem;
+    }
+
+    &__price-value {
+      font-size: 4rem;
+    }
   }
 }

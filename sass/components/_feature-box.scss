@@ -5,7 +5,11 @@
   text-align: center;
   border-radius: $default-border-radius;
   box-shadow: $box-shadow-5;
-  transition: transform 0.5s;
+  transition: transform 0.3s;
+
+  @include respond(tab-port) {
+    padding: 2rem;
+  }
 
   &__icon {
     font-size: 6rem;
@@ -15,6 +19,10 @@
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+
+    @include respond(tab-port) {
+      margin-bottom: 0rem;
+    }
   }
 
   &:hover {

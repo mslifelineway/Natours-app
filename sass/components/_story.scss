@@ -2,12 +2,22 @@
     width: 75%;
     margin: 0 auto;
     box-shadow: 0 3rem 6rem rgba($color-black, 0.1);
-    background-color: rgba($color-white, .6);
+    background-color: rgba($color-white, 0.6);
     border-radius: $default-border-radius;
     padding: 6rem;
     padding-left: 9rem;
     font-size: $default-font-size;
     transform: skewX(-12deg);
+
+    @include respond(tab-port) {
+        width: 100%;
+        padding: 4rem;
+        padding-left: 7rem;
+    }
+
+    @include respond(phone) {
+        transform: skewX(0);
+    }
 
     &__shape {
         width: 15rem;
@@ -21,6 +31,10 @@
         clip-path: circle(50% at 50% 50%); // this will clip the div in a circle
         transform: translateX(-3rem) skewX(12deg);
         position: relative;
+
+        @include respond(phone) {
+            transform: translateX(-3rem) skewX(0);
+        }
     }
 
     &__image {
@@ -32,6 +46,10 @@
 
     &__text {
         transform: skewX(12deg);
+
+        @include respond(phone) {
+            transform: skewX(0);
+        }
     }
 
     &__caption {
