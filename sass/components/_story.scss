@@ -23,17 +23,24 @@
         width: 15rem;
         height: 15rem;
         float: left;
-        -webkit-shape-outside: circle(50% at 50% 50%);
-        shape-outside: circle(
-            50% at 50% 50%
-        ); //this is used to describe the outside content will flow the text around this circle
-        -webkit-clip-path: circle(50% at 50% 50%);
-        clip-path: circle(50% at 50% 50%); // this will clip the div in a circle
         transform: translateX(-3rem) skewX(12deg);
         position: relative;
+        overflow: hidden;
+        border-radius: 50%;
 
         @include respond(phone) {
             transform: translateX(-3rem) skewX(0);
+        }
+
+        @supports (clip-path: polygon(0 0)) or (clip-path: polygon(0 0)) {
+            -webkit-clip-path: circle(50% at 50% 50%);
+            clip-path: circle(50% at 50% 50%); // this will clip the div in a circle
+            border-radius: none;
+
+            -webkit-shape-outside: circle(50% at 50% 50%);
+            shape-outside: circle(
+                50% at 50% 50%
+            ); //this is used to describe the outside content will flow the text around this circle
         }
     }
 

@@ -1,12 +1,54 @@
 .header {
-    height: 95vh;
+    height: 80vh;
     background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)),
-        url(../images/hero.jpg);
+        url(../images/hero-small.jpg);
     background-size: cover;
     background-position: top;
-    -webkit-clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
-    clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
     position: relative;
+
+    @supports (clip-path: polygon(0 0)) or (clip-path: polygon(0 0)) {
+        -webkit-clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+        height: 95vh;
+    }
+    /**
+        High resolution screen (DPR >= 2.0)
+        You can set DPR in chrome developer tool
+        dpi ==> dot per inch
+    */
+    // @media only screen and  (min-resolution: 192dpi) and  (min-width: 37.5em) {
+    //     background-image: linear-gradient(
+    //             to right bottom,
+    //             rgba($color-primary-light, 0.8),
+    //             rgba($color-primary-dark, 0.8)
+    //         ),
+    //         url(../images/hero.jpg);
+    // }
+    /**
+        Low resolution screen (DPR = 1.0)
+        You can set DPR in chrome developer tool
+        when screen min width is 2000px (125/16 = 125em) then hero.jpg should be loaded
+    */
+    // @media only screen and  (min-width: 125em) {
+    //     background-image: linear-gradient(
+    //             to right bottom,
+    //             rgba($color-primary-light, 0.8),
+    //             rgba($color-primary-dark, 0.8)
+    //         ),
+    //         url(../images/hero.jpg);
+    // }
+    //CODE BY COMBINING HIGH AND LOW RESOLUTION INTO ONCE PLACE, SINCE CODE IN BOTH SECTIONS ARE SAME
+    //for safari support, (-webkit-min-device-pixel-ratio: 2x ) and (min-width: 37.5em)
+    @media only screen and (min-resolution: 192dpi) and (min-width: 37.5em),
+        only screen and (-webkit-min-device-pixel-ratio: 2) and (min-width: 37.5em),
+        only screen and (min-width: 125em) {
+        background-image: linear-gradient(
+                to right bottom,
+                rgba($color-primary-light, 0.8),
+                rgba($color-primary-dark, 0.8)
+            ),
+            url(../images/hero.jpg);
+    }
 
     @include respond(phone) {
         -webkit-clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);

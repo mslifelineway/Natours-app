@@ -12,6 +12,7 @@
     top: 0;
     left: 0;
     width: 100%;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: $default-border-radius;
     box-shadow: $box-shadow-5;
@@ -154,7 +155,10 @@
     font-weight: 100;
   }
 
-  @include respond(tab-port) {
+  // If the device is tablet like ipad pro but there is no hover then also this css should be applied
+
+  // @include respond(tab-port) {
+  @media only screen and(max-width: 56.25em), only screen and (hover: none) {
     height: auto;
     border-radius: 3px;
     background-color: $color-white;

@@ -56,9 +56,9 @@
 .booking {
   background-image: linear-gradient(105deg, rgba($color-white, 0.9) 0%, rgba($color-white, 0.9) 50%, transparent 50%),
     url(../images/nat-10.jpg);
-  background-size: 100%; //cover
+  background-size: cover;
   border-radius: $default-border-radius;
-  box-shadow: $box-shadow-5;
+  // box-shadow: $box-shadow-5;
   width: 82%;
   margin: 0 auto;
 
